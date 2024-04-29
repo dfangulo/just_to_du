@@ -38,15 +38,17 @@ class ToDo:
                 input(f"\t'{choice.capitalize()}' No es una opcion valida.")
 
     def show_active_tasks(self) -> None:
-        # self.manager.show_active_tasks()
-        self.manager.show_detail_tasks()
+        self.manager.show_active_tasks()
+        self.manager.show_detail_active_tasks()
         input("Enter para continuar")
 
     def show_completed_tasks(self) -> None:
+        self.manager.show_active_tasks()
         self.manager.show_completed_tasks()
         input("Enter para continuar")
 
     def show_cancel_tasks(self) -> None:
+        self.manager.show_active_tasks()
         self.manager.show_cancel_tasks()
         input("Enter para continuar")
 
@@ -97,9 +99,10 @@ class ToDo:
             task_edit = input("Cual tarea quieres cancelar: ")
             if task_edit:
                 self.manager.show_task(int(task_edit))
-                cancel_task = input("Segura de cancelar (S): ")
+                cancel_task = input("Confirmar cancelacion (S): ")
                 if cancel_task.lower() == "s":
                     self.manager.edit_task(int(task_edit), task_cancel=True)
+                    self.manager.edit_task(int(task_edit), task_active=False)
             else:
                 input("No se completó ninguna tarea.")
 

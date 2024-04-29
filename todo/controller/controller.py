@@ -1,10 +1,15 @@
 import os
 import time
+import json
 from ..model import Task
 
 
 class TaskManager:
-    tasks_list = []
+    tasks_list: list[Task] = []
+    task_json_file: str = "todo/json/tasks.json"
+
+    def __init__(self) -> None:
+        self.load_tasks_list()
 
     def add_task(self) -> None:
         while True:
@@ -13,6 +18,7 @@ class TaskManager:
                 new_task = Task(task_nane)
                 self.tasks_list.append(new_task)
                 print(f"{new_task.task_name}, agregada exitosamente")
+                self.save_tasks_list()
                 time.sleep(1 / 3)
             else:
                 time.sleep(1 / 3)
@@ -23,6 +29,7 @@ class TaskManager:
         print(kwargs)
         if 0 <= index < len(self.tasks_list):
             self.tasks_list[index].edit_task(**kwargs)
+            self.save_tasks_list()
         else:
             input("Índice de tarea fuera de rango.")
 
@@ -35,17 +42,26 @@ class TaskManager:
     def delete_task(self, index) -> None:
         if 0 <= index < len(self.tasks_list):
             del self.tasks_list[index]
+            self.save_tasks_list()
         else:
             input("Índice de tarea fuera de rango.")
 
     def complete_task(self, index) -> None:
         if 0 <= index < len(self.tasks_list):
-            self.tasks_list[index].complete_task()
+            self.tasks_list[index].task_complete = True
+            self.tasks_list[index].task_active = False
+            self.save_tasks_list()
             input(f"Tarea: '{self.tasks_list[index].task_name}' - Completada!")
 
-    def show_detail_tasks(self) -> None:
-        for task in self.tasks_list:
-            print(task)
+    def show_detail_active_tasks(self) -> None:
+        try:
+            print("\n","¡Tareas Activas!".center(80))
+            for task in self.tasks_list:
+                if task.task_active:
+                    print("+", "-" * 78, "+")
+                    print(task)
+        except Exception as e:
+            input(f"Error en show_detail_active_tasks: {str(e)}")
 
     def show_active_tasks(self) -> None:
         active_tasks: int = 0
@@ -69,58 +85,28 @@ class TaskManager:
                     return 1
 
         except Exception as e:
-            raise (f"Error en show_tasks_list: {str(e)}")
+            raise (f"Error en show_active_tasks: {str(e)}")
         return 0
 
     def show_completed_tasks(self) -> None:
-        active_tasks: int = 0
         try:
-            if self.tasks_list:
-                print(
-                    "#".center(4),
-                    "Nombre de la Tarea".center(60),
-                    "Duración".center(24),
-                )
-                for index, tarea in enumerate(self.tasks_list):
-                    if tarea.task_active is False:
-                        active_tasks += 1
-                        print(
-                            str(index).ljust(4),
-                            tarea.task_name.ljust(60),
-                            str(tarea.task_duration).ljust(24),
-                        )
-                if active_tasks >= 1:
-                    return 1
-            else:
-                input("No hay tareas completadas de momento!")
+            print("\n","¡Tareas Completadas!".center(80))
+            for task in self.tasks_list:
+                if task.task_active is False:
+                    print("+", "-" * 78, "+")
+                    print(task)
         except Exception as e:
-            input(f"Error en show_tasks_list: {str(e)}")
-        return 0
+            input(f"Error en show_completed_tasks: {str(e)}")
 
     def show_cancel_tasks(self) -> None:
-        cancel_tasks: int = 0
         try:
-            if self.tasks_list:
-                print(
-                    "#".center(4),
-                    "Nombre de la Tarea".center(60),
-                    "Duración".center(24),
-                )
-                for index, tarea in enumerate(self.tasks_list):
-                    if tarea.task_cancel:
-                        cancel_tasks += 1
-                        print(
-                            str(index).ljust(4),
-                            tarea.task_name.ljust(60),
-                            str(tarea.task_duration).ljust(24),
-                        )
-                if cancel_tasks >= 1:
-                    return 1
-            else:
-                input("No hay tareas canceladas de momento!")
+            print("\n","¡Tareas Canceladas!".center(80))
+            for task in self.tasks_list:
+                if task.task_cancel:
+                    print("+", "-" * 78, "+")
+                    print(task)
         except Exception as e:
             input(f"Error en show_cancel_tasks: {str(e)}")
-        return 0
 
     def priority_task(self, index: int) -> None:
         """
@@ -130,3 +116,26 @@ class TaskManager:
         """
         task = self.tasks_list.pop(index)
         self.tasks_list.insert(0, task)
+        self.save_tasks_list()
+
+    def save_tasks_list(self, filename=task_json_file) -> None:
+        try:
+            with open(filename, "w") as file:
+                json.dump([task.serialize() for task in self.tasks_list], file)
+            print("Lista de tareas guardada exitosamente en", filename)
+        except Exception as e:
+            print("Error al guardar la lista de tareas:", str(e))
+
+    def load_tasks_list(self, filename=task_json_file) -> None:
+        try:
+            with open(filename, "r") as file:
+                tasks_data = json.load(file)
+                self.tasks_list = [
+                    Task.deserialize(task_data) for task_data in tasks_data
+                ]
+            print("Lista de tareas cargada exitosamente desde", filename)
+        except FileNotFoundError:
+            print("El archivo de tareas no existe. Se creará una nueva lista.")
+            self.tasks_list = []
+        except Exception as e:
+            print("Error al cargar la lista de tareas:", str(e))

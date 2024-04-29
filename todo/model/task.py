@@ -13,12 +13,11 @@ class Task:
     task_cancel: bool = False
 
     def __str__(self) -> str:
-        return f"""
-    Nombre: {self.task_name}
+        return f"""    Nombre: {self.task_name}
     Fecha Inicio: {self.task_creation_date}
     Activa: {'Si' if self.task_active else 'No'}
-    Tiempo: {str(self.set_duration())}
-"""
+    Completada: {'Si' if self.task_complete else 'No'}
+    Tiempo: {str(self.set_duration())}"""
 
     def edit_task(self, task_name: str = None, task_cancel: bool = None) -> None:
         if task_name:
@@ -46,3 +45,32 @@ class Task:
             end = datetime.strptime(ended, "%Y-%m-%d %H:%M:%S")
         duration = end - start
         return duration
+
+    def serialize(self) -> dict:
+        """
+        Serializa el objeto Task en un diccionario.
+        """
+        return {
+            'task_name': self.task_name,
+            'task_duration': self.task_duration,
+            'task_creation_date': self.task_creation_date,
+            'task_completion_date': self.task_completion_date,
+            'task_active': self.task_active,
+            'task_complete': self.task_complete,
+            'task_cancel': self.task_cancel
+        }
+
+    @classmethod
+    def deserialize(cls, data: dict):
+        """
+        Deserializa un diccionario en un objeto Task.
+        """
+        return cls(
+            task_name=data['task_name'],
+            task_duration=data['task_duration'],
+            task_creation_date=data['task_creation_date'],
+            task_completion_date=data['task_completion_date'],
+            task_active=data['task_active'],
+            task_complete=data['task_complete'],
+            task_cancel=data['task_cancel']
+        )
