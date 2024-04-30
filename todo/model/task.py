@@ -19,11 +19,13 @@ class Task:
     Completada: {'Si' if self.task_complete else 'No'}
     Tiempo: {str(self.set_duration())}"""
 
-    def edit_task(self, task_name: str = None, task_cancel: bool = None) -> None:
+    def edit_task(self, task_name: str = None, task_cancel: bool = None, task_active: bool = None) -> None:
         if task_name:
             self.task_name = task_name
         if task_cancel:
             self.task_cancel = task_cancel
+        if task_active:
+            self.task_active = task_active
 
     def __post_init__(self) -> None:
         if self.task_creation_date is None:

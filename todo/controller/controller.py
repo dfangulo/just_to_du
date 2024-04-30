@@ -15,7 +15,7 @@ class TaskManager:
         while True:
             task_nane = input("Nombre para la tarea: ")
             if task_nane:
-                new_task = Task(task_nane)
+                new_task: Task = Task(task_nane)
                 self.tasks_list.append(new_task)
                 print(f"{new_task.task_name}, agregada exitosamente")
                 self.save_tasks_list()
@@ -48,9 +48,7 @@ class TaskManager:
 
     def complete_task(self, index) -> None:
         if 0 <= index < len(self.tasks_list):
-            self.tasks_list[index].task_complete = True
-            self.tasks_list[index].task_active = False
-            self.save_tasks_list()
+            self.tasks_list[index].task_complete()
             input(f"Tarea: '{self.tasks_list[index].task_name}' - Completada!")
 
     def show_detail_active_tasks(self) -> None:

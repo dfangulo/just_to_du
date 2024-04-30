@@ -96,15 +96,15 @@ class ToDo:
     def cancel_task(self) -> None:
         to_show = self.manager.show_active_tasks()
         if to_show:
-            task_edit = input("Cual tarea quieres cancelar: ")
+            task_edit = input("¿Qué tarea quieres cancelar? Ingresa el número correspondiente: ")
             if task_edit:
                 self.manager.show_task(int(task_edit))
-                cancel_task = input("Confirmar cancelacion (S): ")
-                if cancel_task.lower() == "s":
-                    self.manager.edit_task(int(task_edit), task_cancel=True)
-                    self.manager.edit_task(int(task_edit), task_active=False)
+                cancel_confirmation = input("¿Confirmar cancelación? (Sí/N): ")
+                if cancel_confirmation.lower() == "s":
+                    self.manager.edit_task(int(task_edit), task_cancel=True, task_active=False)
             else:
-                input("No se completó ninguna tarea.")
+                input("No se seleccionó ninguna tarea.")
+
 
     def delete_task(self) -> None:
         to_show = self.manager.show_active_tasks()
