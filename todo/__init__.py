@@ -26,7 +26,7 @@ class ToDo:
             elif choice == "b":
                 self.show_cancel_tasks()
             elif choice == "g":
-                self.task_managment()
+                self.task_managment_menu()
             else:
                 print(f"\n\t'{choice.capitalize()}' No es una opcion valida.")
                 input(f"\nOpciones validas [{', '.join(key_used)} o 's'] para salir")
@@ -48,7 +48,7 @@ class ToDo:
         self.manager.show_cancel_tasks()
         input("\n\tEnter para continuar")
 
-    def task_managment(self) -> None:
+    def task_managment_menu(self) -> None:
         while True:
             self.manager.show_active_tasks()
             key_used = menu(
@@ -83,35 +83,41 @@ class ToDo:
     def complete_task(self) -> None:
         to_show = self.manager.show_active_tasks()
         if to_show:
-            task_complete = input("Cual tarea quieres completar: ")
-            if task_complete:
-                self.manager.complete_task(int(task_complete))
+            task_complete_index = input("Cual tarea quieres completar: ").rstrip()
+            if task_complete_index:
+                self.manager.edit_task(
+                    int(task_complete_index),
+                    task_complete=True,
+                    task_active=False,
+                    task_completion_date=True,
+                    task_duration=True,
+                )
             else:
                 input("No se completó ninguna tarea.")
 
     def edit_task(self) -> None:
         to_show = self.manager.show_active_tasks()
         if to_show:
-            task_edit = input("Cual tarea quieres editar: ")
-            if task_edit:
-                self.manager.show_task(int(task_edit))
+            task_edit_index = input("Cual tarea quieres editar: ").rstrip()
+            if task_edit_index:
+                self.manager.show_task(int(task_edit_index))
                 new_task_name = input("Introduce el nuevo nombre: ")
-                self.manager.edit_task(int(task_edit), task_name=new_task_name)
+                self.manager.edit_task(int(task_edit_index), task_name=new_task_name)
             else:
                 input("No se completó ninguna tarea.")
 
     def cancel_task(self) -> None:
         to_show = self.manager.show_active_tasks()
         if to_show:
-            task_edit = input(
+            task_edit_index = input(
                 "¿Qué tarea quieres cancelar? Ingresa el número correspondiente: "
-            )
-            if task_edit:
-                self.manager.show_task(int(task_edit))
+            ).rstrip()
+            if task_edit_index:
+                self.manager.show_task(int(task_edit_index))
                 cancel_confirmation = input("¿Confirmar cancelación? (Sí/N): ")
                 if cancel_confirmation.lower() == "s":
                     self.manager.edit_task(
-                        int(task_edit), task_cancel=True, task_active=False
+                        int(task_edit_index), task_cancel=True, task_active=False
                     )
             else:
                 input("No se seleccionó ninguna tarea.")

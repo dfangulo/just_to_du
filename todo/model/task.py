@@ -19,23 +19,33 @@ class Task:
     Completada: {'Si' if self.task_complete else 'No'}
     Tiempo: {str(self.set_duration())}"""
 
-    def edit_task(self, task_name: str = None, task_cancel: bool = None, task_active: bool = None) -> None:
+    def __post_init__(self) -> None:
+        if self.task_creation_date is None:
+            self.task_creation_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+    def edit_task(
+        self,
+        task_name: str = None,
+        task_cancel: bool = None,
+        task_active: bool = None,
+        task_complete: bool = None,
+        task_duration: bool = None,
+        task_completion_date: bool = None,
+    ) -> None:
         if task_name is not None:
             self.task_name = task_name
         if task_cancel is not None:
             self.task_cancel = task_cancel
         if task_active is not None:
             self.task_active = task_active
-
-    def __post_init__(self) -> None:
-        if self.task_creation_date is None:
-            self.task_creation_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
-    def complete_task(self) -> None:
-        self.task_completion_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        self.task_complete = True
-        self.task_active = False
-        self.task_duration = self.set_duration()
+        if task_complete is not None:
+            self.task_complete = task_complete
+        if task_completion_date is not None:
+            self.task_completion_date = str(
+                datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            )
+        if task_duration is not None:
+            self.task_duration = str(self.set_duration())
 
     def set_duration(self) -> datetime:
         start = datetime.strptime(self.task_creation_date, "%Y-%m-%d %H:%M:%S")
@@ -53,13 +63,13 @@ class Task:
         Serializa el objeto Task en un diccionario.
         """
         return {
-            'task_name': self.task_name,
-            'task_duration': self.task_duration,
-            'task_creation_date': self.task_creation_date,
-            'task_completion_date': self.task_completion_date,
-            'task_active': self.task_active,
-            'task_complete': self.task_complete,
-            'task_cancel': self.task_cancel
+            "task_name": self.task_name,
+            "task_duration": self.task_duration,
+            "task_creation_date": self.task_creation_date,
+            "task_completion_date": self.task_completion_date,
+            "task_active": self.task_active,
+            "task_complete": self.task_complete,
+            "task_cancel": self.task_cancel,
         }
 
     @classmethod
@@ -68,11 +78,11 @@ class Task:
         Deserializa un diccionario en un objeto Task.
         """
         return cls(
-            task_name=data['task_name'],
-            task_duration=data['task_duration'],
-            task_creation_date=data['task_creation_date'],
-            task_completion_date=data['task_completion_date'],
-            task_active=data['task_active'],
-            task_complete=data['task_complete'],
-            task_cancel=data['task_cancel']
+            task_name=data["task_name"],
+            task_duration=data["task_duration"],
+            task_creation_date=data["task_creation_date"],
+            task_completion_date=data["task_completion_date"],
+            task_active=data["task_active"],
+            task_complete=data["task_complete"],
+            task_cancel=data["task_cancel"],
         )

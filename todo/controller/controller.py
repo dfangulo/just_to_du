@@ -30,12 +30,6 @@ class TaskManager:
         else:
             input("Índice de tarea fuera de rango.")
 
-    def show_task(self, index: int) -> None:
-        if 0 <= index < len(self.tasks_list):
-            print(self.tasks_list[index])
-        else:
-            input("Índice de tarea fuera de rango.")
-
     def delete_task(self, index) -> None:
         if 0 <= index < len(self.tasks_list):
             del self.tasks_list[index]
@@ -43,11 +37,11 @@ class TaskManager:
         else:
             input("Índice de tarea fuera de rango.")
 
-    def complete_task(self, index) -> None:
+    def show_task(self, index: int) -> None:
         if 0 <= index < len(self.tasks_list):
-            self.tasks_list[index].complete_task()
-            input(f"Tarea: '{self.tasks_list[index].task_name}' - Completada!")
-            self.save_tasks_list()
+            print(self.tasks_list[index])
+        else:
+            input("Índice de tarea fuera de rango.")
 
     def show_detail_active_tasks(self) -> None:
         try:
