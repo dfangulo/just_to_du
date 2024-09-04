@@ -1,15 +1,14 @@
-# import os
-
-
-def menu(options: list) -> None:
-    # os.system("cls")
+def menu(options: list, keys: list = ["f", "d", "b", "g", "e", "c", "a"]) -> None:
+    key_used:list = []
     menu_str = "\n" + "LISTA DE TAREAS DIARIAS".center(40) + "\n"
 
-    for index, option in enumerate(options):
+    for key, option in zip(keys, options):
+        key_used.append(key)
         menu_str += f"""
-    [{index + 1}] => {option}"""
-    menu_str += """
-
-    [S] => Regresar o salir
+    [{key}] => {option}"""
+    menu_str += """\n
+    [s] => Regresar o salir
     """
     print(menu_str)
+    return key_used
+

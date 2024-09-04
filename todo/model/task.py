@@ -20,11 +20,11 @@ class Task:
     Tiempo: {str(self.set_duration())}"""
 
     def edit_task(self, task_name: str = None, task_cancel: bool = None, task_active: bool = None) -> None:
-        if task_name:
+        if task_name is not None:
             self.task_name = task_name
-        if task_cancel:
+        if task_cancel is not None:
             self.task_cancel = task_cancel
-        if task_active:
+        if task_active is not None:
             self.task_active = task_active
 
     def __post_init__(self) -> None:

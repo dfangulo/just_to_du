@@ -4,71 +4,78 @@ from .menu import menu
 
 class ToDo:
     manager = TaskManager()
-    menu_opptions = [
-        "Mostrar tareas Activas",
-        "Mostrar tareas Completadas",
-        "Mostrar tareas Canceladas",
-        "Administrar Tareas",
-    ]
-    sub_menu_options = [
-        "Agregar Tarea",
-        "Completar Tarea",
-        "Editar Tarea",
-        "Cancelar Tarea",
-        "Borrar Tarea",
-    ]
 
     def run(self) -> None:
         while True:
             self.manager.show_active_tasks()
-            menu(self.menu_opptions)
+            key_used = menu(
+                [
+                    "Mostrar tareas Activas",
+                    "Mostrar tareas Completadas",
+                    "Mostrar tareas Canceladas",
+                    "Administrar Tareas",
+                ]
+            )
             choice = input("Seleccionar una Opcion: ")
             if choice.lower() == "s":
                 break
-            elif choice == "1":
+            elif choice == "f":
                 self.show_active_tasks()
-            elif choice == "2":
+            elif choice == "d":
                 self.show_completed_tasks()
-            elif choice == "3":
+            elif choice == "b":
                 self.show_cancel_tasks()
-            elif choice == "4":
+            elif choice == "g":
                 self.task_managment()
             else:
-                print("\nOpciones validas '1', '2', '3', '4' o 'S' para salir")
-                input(f"\t'{choice.capitalize()}' No es una opcion valida.")
+                print(f"\n\t'{choice.capitalize()}' No es una opcion valida.")
+                input(f"\nOpciones validas [{', '.join(key_used)} o 's'] para salir")
 
     def show_active_tasks(self) -> None:
+        self.manager.load_tasks_list()
         self.manager.show_active_tasks()
         self.manager.show_detail_active_tasks()
-        input("Enter para continuar")
+        input("\n\tEnter para continuar")
 
     def show_completed_tasks(self) -> None:
+        self.manager.load_tasks_list()
         self.manager.show_active_tasks()
         self.manager.show_completed_tasks()
-        input("Enter para continuar")
+        input("\n\tEnter para continuar")
 
     def show_cancel_tasks(self) -> None:
         self.manager.show_active_tasks()
         self.manager.show_cancel_tasks()
-        input("Enter para continuar")
+        input("\n\tEnter para continuar")
 
     def task_managment(self) -> None:
         while True:
             self.manager.show_active_tasks()
-            menu(self.sub_menu_options)
+            key_used = menu(
+                [
+                    "Agregar Tarea",
+                    "Completar Tarea",
+                    "Editar Tarea",
+                    "Cancelar Tarea",
+                    "Borrar Tarea",
+                ]
+            )
             sub_choice = input("Seleciona una opcion: ")
             if sub_choice.lower() == "s":
                 break
-            elif sub_choice == "1":
+            elif sub_choice == "f":
                 self.add_task()
-            elif sub_choice == "2":
+            elif sub_choice == "d":
                 self.complete_task()
-            elif sub_choice == "3":
+            elif sub_choice == "b":
                 self.edit_task()
-            elif sub_choice == "4":
+            elif sub_choice == "g":
                 self.cancel_task()
-            elif sub_choice == "5":
+            elif sub_choice == "e":
                 self.delete_task()
+            else:
+                print(f"\n\t'{sub_choice.capitalize()}' No es una opcion valida.")
+                input(f"\nOpciones validas [{', '.join(key_used)} o 's'] para salir")
 
     def add_task(self) -> None:
         self.manager.add_task()
@@ -96,15 +103,18 @@ class ToDo:
     def cancel_task(self) -> None:
         to_show = self.manager.show_active_tasks()
         if to_show:
-            task_edit = input("¿Qué tarea quieres cancelar? Ingresa el número correspondiente: ")
+            task_edit = input(
+                "¿Qué tarea quieres cancelar? Ingresa el número correspondiente: "
+            )
             if task_edit:
                 self.manager.show_task(int(task_edit))
                 cancel_confirmation = input("¿Confirmar cancelación? (Sí/N): ")
                 if cancel_confirmation.lower() == "s":
-                    self.manager.edit_task(int(task_edit), task_cancel=True, task_active=False)
+                    self.manager.edit_task(
+                        int(task_edit), task_cancel=True, task_active=False
+                    )
             else:
                 input("No se seleccionó ninguna tarea.")
-
 
     def delete_task(self) -> None:
         to_show = self.manager.show_active_tasks()

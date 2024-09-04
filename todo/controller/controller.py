@@ -8,12 +8,10 @@ class TaskManager:
     tasks_list: list[Task] = []
     task_json_file: str = "todo/json/tasks.json"
 
-    def __init__(self) -> None:
-        self.load_tasks_list()
-
     def add_task(self) -> None:
         while True:
-            task_nane = input("Nombre para la tarea: ")
+            print("Enter para continuar!")
+            task_nane = input("\n\tNombre para la tarea: ")
             if task_nane:
                 new_task: Task = Task(task_nane)
                 self.tasks_list.append(new_task)
@@ -26,7 +24,6 @@ class TaskManager:
                 break
 
     def edit_task(self, index, **kwargs) -> None:
-        print(kwargs)
         if 0 <= index < len(self.tasks_list):
             self.tasks_list[index].edit_task(**kwargs)
             self.save_tasks_list()
@@ -48,12 +45,13 @@ class TaskManager:
 
     def complete_task(self, index) -> None:
         if 0 <= index < len(self.tasks_list):
-            self.tasks_list[index].task_complete()
+            self.tasks_list[index].complete_task()
             input(f"Tarea: '{self.tasks_list[index].task_name}' - Completada!")
+            self.save_tasks_list()
 
     def show_detail_active_tasks(self) -> None:
         try:
-            print("\n","¡Tareas Activas!".center(80))
+            print("\n", "¡Tareas Activas!".center(80))
             for task in self.tasks_list:
                 if task.task_active:
                     print("+", "-" * 78, "+")
@@ -62,6 +60,7 @@ class TaskManager:
             input(f"Error en show_detail_active_tasks: {str(e)}")
 
     def show_active_tasks(self) -> None:
+        self.load_tasks_list()
         active_tasks: int = 0
         os.system("cls")
         try:
@@ -88,7 +87,7 @@ class TaskManager:
 
     def show_completed_tasks(self) -> None:
         try:
-            print("\n","¡Tareas Completadas!".center(80))
+            print("\n", "¡Tareas Completadas!".center(80))
             for task in self.tasks_list:
                 if task.task_active is False:
                     print("+", "-" * 78, "+")
@@ -98,7 +97,7 @@ class TaskManager:
 
     def show_cancel_tasks(self) -> None:
         try:
-            print("\n","¡Tareas Canceladas!".center(80))
+            print("\n", "¡Tareas Canceladas!".center(80))
             for task in self.tasks_list:
                 if task.task_cancel:
                     print("+", "-" * 78, "+")
